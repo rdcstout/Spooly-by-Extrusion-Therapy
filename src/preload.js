@@ -9,6 +9,7 @@ const api = {
   openRelease: (url) => ipcRenderer.send('update:open-release', url),
   scanBambu: () => ipcRenderer.invoke('bambu:scan'),
   scanMoonraker: () => ipcRenderer.invoke('moonraker:scan'),
+  listRepetierPrinters: (config) => ipcRenderer.invoke('repetierserver:list-printers', config),
   saveSettings: (settings) => ipcRenderer.invoke('settings:save', settings),
   openSettings: () => ipcRenderer.send('settings:open'),
   openExtrusionTherapy: () => ipcRenderer.send('external:extrusion-therapy'),

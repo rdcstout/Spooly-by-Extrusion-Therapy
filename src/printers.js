@@ -2,18 +2,33 @@ function normalizeHost(value = '') {
   return String(value).trim().toLowerCase().replace(/^https?:\/\//, '').replace(/\/$/, '');
 }
 
-function canonicalPrinterKey(printer = {}) {
-  if (printer.type === 'bambu') {
+// Single lookup point for per-type dedup key logic. Add a new printer type by
+// adding one entry here instead of extending an if/else chain.
+const CANONICAL_KEY_BY_TYPE = {
+  bambu: (printer) => {
     const serial = String(printer.serial || '').trim().toUpperCase();
     if (serial) return `bambu:serial:${serial}`;
     const host = normalizeHost(printer.host);
     return host ? `bambu:host:${host}` : null;
-  }
-  if (printer.type === 'moonraker') {
+  },
+  moonraker: (printer) => {
     const host = normalizeHost(printer.host);
     return host ? `moonraker:${host}:${Number(printer.port) || 7125}` : null;
-  }
-  return null;
+  },
+  duet: (printer) => {
+    const host = normalizeHost(printer.host);
+    return host ? `duet:${host}:${Number(printer.port) || 80}` : null;
+  },
+  repetierserver: (printer) => {
+    const host = normalizeHost(printer.host);
+    const slug = String(printer.slug || '').trim().toLowerCase();
+    return host && slug ? `repetierserver:${host}:${Number(printer.port) || 3344}:${slug}` : null;
+  },
+};
+
+function canonicalPrinterKey(printer = {}) {
+  const keyFn = CANONICAL_KEY_BY_TYPE[printer.type];
+  return keyFn ? keyFn(printer) : null;
 }
 
 function dedupePrinters(printers = []) {

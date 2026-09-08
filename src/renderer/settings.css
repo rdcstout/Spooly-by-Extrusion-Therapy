@@ -28,6 +28,12 @@ button:disabled { cursor: default; opacity: .55; }
 .bambu { display: none; }
 .printer.is-bambu .bambu { display: grid; }
 .printer.is-bambu .moon { display: none; }
+.repetier { display: none; }
+.printer.is-repetierserver .repetier { display: grid; }
+.repetier-actions { grid-column: 1 / -1; justify-content: flex-start; gap: 7px; }
+.printer.is-repetierserver .repetier-actions { display: flex; }
+.printer.is-repetierserver .moon-actions, .printer.is-repetierserver .moon-scan-results,
+.printer.is-duet .moon-actions, .printer.is-duet .moon-scan-results { display: none; }
 .bambu-actions { grid-column: 1 / -1; grid-template-columns: auto auto; justify-content: start; gap: 7px; }
 .printer.is-bambu .bambu-actions { display: flex; }
 .scan-results { grid-column: 1 / -1; gap: 6px; }
