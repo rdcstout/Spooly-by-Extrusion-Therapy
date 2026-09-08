@@ -1,3 +1,6 @@
+const CLOUD_METADATA_HOSTS = new Set(['169.254.169.254', 'metadata.google.internal']);
+const VALID_HOST_PATTERN = /^(\[[0-9a-fA-F:]+\]|[a-zA-Z0-9](?:[a-zA-Z0-9-]*[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]*[a-zA-Z0-9])?)*)$/;
+
 class MoonrakerAdapter {
   constructor(config) {
     this.config = config;
@@ -5,7 +8,10 @@ class MoonrakerAdapter {
   }
 
   get baseUrl() {
-    const host = this.config.host.replace(/^https?:\/\//, '');
+    const host = this.config.host.replace(/^https?:\/\//, '').trim();
+    if (!VALID_HOST_PATTERN.test(host) || CLOUD_METADATA_HOSTS.has(host.toLowerCase())) {
+      throw new Error('Invalid printer host');
+    }
     return `http://${host}:${this.config.port || 7125}`;
   }
 
