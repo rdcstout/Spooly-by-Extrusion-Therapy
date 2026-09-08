@@ -7,6 +7,7 @@ const automaticUpdates = document.querySelector('#automaticUpdates');
 const existingPrinterIds = new Set();
 const MIN_SCALE = .65;
 const MAX_SCALE = 1.1;
+const PORT_DEFAULTS = { moonraker: 7125, repetierserver: 3344 };
 
 function sliderToScale(value) {
   return MIN_SCALE + ((Number(value) - 1) / 99) * (MAX_SCALE - MIN_SCALE);
@@ -26,6 +27,9 @@ function printerKey(printer = {}) {
     const serial = String(printer.serial || '').trim().toUpperCase();
     return serial ? `bambu:serial:${serial}` : `bambu:host:${normalizeHost(printer.host)}`;
   }
+  if (printer.type === 'repetierserver') {
+    return `repetierserver:${normalizeHost(printer.host)}:${Number(printer.port) || 3344}:${String(printer.slug || '').trim().toLowerCase()}`;
+  }
   return `moonraker:${normalizeHost(printer.host)}:${Number(printer.port) || 7125}`;
 }
 
@@ -35,6 +39,16 @@ function cardValue(card) {
     printer[input.dataset.field] = input.type === 'number' ? Number(input.value) : input.value.trim();
   });
   return printer;
+}
+
+function applyPortDefault(card) {
+  const portInput = card.querySelector('[data-field="port"]');
+  const type = card.querySelector('[data-field="type"]').value;
+  const defaultPort = PORT_DEFAULTS[type] || PORT_DEFAULTS.moonraker;
+  if (!portInput.value || portInput.dataset.auto === 'true') {
+    portInput.value = defaultPort;
+    portInput.dataset.auto = 'true';
+  }
 }
 
 function existingCard(printer, excludingCard) {
@@ -73,8 +87,14 @@ function addPrinter(data = {}, { prepend = false, focus = false } = {}) {
   const card = template.content.firstElementChild.cloneNode(true);
   card.dataset.id = data.id || crypto.randomUUID();
   card.querySelectorAll('[data-field]').forEach((input) => { if (data[input.dataset.field] !== undefined) input.value = data[input.dataset.field]; });
-  const updateType = () => card.classList.toggle('is-bambu', card.querySelector('[data-field="type"]').value === 'bambu');
+  const updateType = () => {
+    const type = card.querySelector('[data-field="type"]').value;
+    card.classList.toggle('is-bambu', type === 'bambu');
+    card.classList.toggle('is-repetierserver', type === 'repetierserver');
+    applyPortDefault(card);
+  };
   card.querySelector('[data-field="type"]').addEventListener('change', updateType);
+  card.querySelector('[data-field="port"]').addEventListener('input', (event) => { delete event.currentTarget.dataset.auto; });
   card.querySelector('.guide-button').addEventListener('click', () => document.querySelector('#bambuGuide').showModal());
   card.querySelector('.scan-moonraker').addEventListener('click', async (event) => {
     const button = event.currentTarget;
@@ -153,6 +173,53 @@ function addPrinter(data = {}, { prepend = false, focus = false } = {}) {
       if (button.textContent === 'Scanning…') button.textContent = 'Scan local network';
     }
   });
+  card.querySelector('.scan-repetier').addEventListener('click', async (event) => {
+    const button = event.currentTarget;
+    const results = card.querySelector('.repetier-scan-results');
+    const host = card.querySelector('[data-field="host"]').value.trim();
+    const apiKey = card.querySelector('[data-field="apiKey"]').value.trim();
+    results.replaceChildren();
+    if (!host || !apiKey) {
+      results.textContent = !host ? 'Enter the host first.' : 'Enter the API key first.';
+      return;
+    }
+    button.disabled = true;
+    button.textContent = 'Fetching…';
+    try {
+      const printers = await window.spooly.listRepetierPrinters({
+        host,
+        port: Number(card.querySelector('[data-field="port"]').value) || undefined,
+        apiKey,
+      });
+      const applyPrinter = (printer) => {
+        card.querySelector('[data-field="slug"]').value = printer.slug;
+        const name = card.querySelector('[data-field="name"]');
+        if (!name.value) name.value = printer.name;
+      };
+      if (printers.length === 0) {
+        results.textContent = 'No printers found — try manual entry';
+      } else if (printers.length === 1) {
+        applyPrinter(printers[0]);
+        button.textContent = 'Printer selected';
+      } else {
+        const currentSlug = card.querySelector('[data-field="slug"]').value.trim();
+        const select = document.createElement('select');
+        select.append(new Option('Select a printer…', '', true, !currentSlug));
+        select.firstChild.disabled = true;
+        printers.forEach((printer) => select.append(new Option(`${printer.name} · ${printer.slug}`, printer.slug, false, printer.slug === currentSlug)));
+        select.addEventListener('change', () => {
+          const printer = printers.find((p) => p.slug === select.value);
+          if (printer) applyPrinter(printer);
+        });
+        results.append(select);
+      }
+    } catch (_) {
+      results.textContent = 'Fetch failed — check host, port, and API key.';
+    } finally {
+      button.disabled = false;
+      if (button.textContent === 'Fetching…') button.textContent = 'Fetch printers';
+    }
+  });
   card.querySelector('.remove').addEventListener('click', () => card.remove());
   updateType();
   if (data.accessCodeNeedsReentry) {
@@ -163,6 +230,15 @@ function addPrinter(data = {}, { prepend = false, focus = false } = {}) {
     card.scrollIntoView({ behavior: 'smooth', block: 'start' });
     card.querySelector('[data-field="name"]').focus({ preventScroll: true });
   });
+}
+
+// A RepetierServer connection is addressed by its printer slug, so a card
+// without one cannot be saved. Flag the card instead of silently dropping it.
+function invalidPrinterCard() {
+  return [...list.children].find((card) => {
+    const printer = cardValue(card);
+    return printer.type === 'repetierserver' && printer.name && printer.host && !String(printer.slug || '').trim();
+  }) || null;
 }
 
 function readPrinters() {
@@ -230,6 +306,13 @@ scale.addEventListener('input', () => {
 });
 document.querySelector('#save').addEventListener('click', async () => {
   const saved = document.querySelector('#saved');
+  const invalidCard = invalidPrinterCard();
+  if (invalidCard) {
+    saved.textContent = 'Pick a RepetierServer printer before saving.';
+    const slugInput = invalidCard.querySelector('[data-field="slug"]');
+    slugInput.focus();
+    return;
+  }
   const printers = readPrinters();
   const newPrinterCount = printers.filter((printer) => !existingPrinterIds.has(printer.id)).length;
   const saveMessage = newPrinterCount > 0

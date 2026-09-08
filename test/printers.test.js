@@ -30,3 +30,18 @@ test('recognizes unchanged printer connections during settings saves', () => {
   assert.equal(samePrinterConfiguration(moonraker, { ...moonraker, port: '7125' }), true);
   assert.equal(samePrinterConfiguration(moonraker, { ...moonraker, host: '192.168.1.10' }), false);
 });
+
+test('treats RepetierServer printers on the same host and port but different slugs as distinct', () => {
+  const first = canonicalPrinterKey({ type: 'repetierserver', host: '192.168.1.30', port: 3344, slug: 'printer1' });
+  const second = canonicalPrinterKey({ type: 'repetierserver', host: '192.168.1.30', port: 3344, slug: 'printer2' });
+  assert.notEqual(first, second);
+  assert.ok(first);
+  assert.ok(second);
+});
+
+test('identifies duplicate RepetierServer printers by normalized host, port, and slug', () => {
+  assert.equal(
+    canonicalPrinterKey({ type: 'repetierserver', host: 'http://Repetier.local/', port: 3344, slug: 'Printer1' }),
+    canonicalPrinterKey({ type: 'repetierserver', host: 'repetier.local', port: 3344, slug: 'printer1' }),
+  );
+});

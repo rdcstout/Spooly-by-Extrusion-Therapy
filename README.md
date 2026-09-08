@@ -38,7 +38,7 @@ Spooly is a small, always-on-top desktop pet that watches supported printers on 
 - Actual and target nozzle/bed temperatures while printing or paused; actual temperatures otherwise
 - Part, auxiliary, and chamber fan states when the printer reports them
 - Animated mascot reactions and automatic attention bubbles
-- Local-network discovery for Bambu Lab and Moonraker-compatible printers
+- Local-network discovery for Bambu Lab and Moonraker-compatible printers, and printer lookup for Repetier-Server hosts
 - Multiple-printer monitoring, duplicate detection, configuration backup/restore, adjustable mascot size, launch at login, and optional weekly update checks
 - Read-only monitoring: Spooly does not start, pause, stop, or modify prints
 
@@ -48,6 +48,7 @@ Spooly is a small, always-on-top desktop pet that watches supported printers on 
 | --- | --- | --- |
 | **Bambu local MQTT** | X1 Carbon, H2S | Local discovery, status, progress, temperatures, and reported fans. An access code and serial number are required. |
 | **Klipper / Moonraker** | Snapmaker U1 | Local discovery and monitoring through Moonraker's HTTP API. |
+| **Repetier-Server** | Reported working | Monitoring through Repetier-Server's local HTTP API. A server API key and the printer's slug are required; press **Fetch printers** in Setup to list the slugs the server exposes. |
 
 > **Snapmaker U1 with Paxx12 firmware:** If Spooly reports `Moonraker returned 401`, Moonraker's **Require Login** option is enabled. The current Spooly release does not yet support authenticated Moonraker connections. Open `http://<printer-ip>/firmware-config/` and disable **Require Login** to connect. Optional Moonraker API-key support is planned for a future update.
 
