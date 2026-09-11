@@ -1,6 +1,7 @@
 const bubble = document.querySelector('#bubble');
 const resizeHandle = document.querySelector('#resizeHandle');
 const { printerStatusLabel } = globalThis.SpoolyStatusLabel;
+const closeBubble = document.querySelector('#closeBubble');
 let resizing = false;
 
 function escapeHtml(value = '') {
@@ -60,9 +61,16 @@ window.spooly.onBubbleUpdate(({ snapshot, side, layout }) => {
       ? `<span class="telemetry">${telemetryItems.join('')}</span>`
       : '';
     const statusKind = printer.attention?.type === 'stopped' ? 'stopped' : printer.status;
-    return `<div class="row"><strong>${escapeHtml(printer.name)}</strong><span class="status ${escapeHtml(statusKind)}">${escapeHtml(printerStatusLabel(printer))}</span>
+    return `<div class="row"><button class="name" type="button" data-id="${escapeHtml(printer.id)}" title="Open printer">${escapeHtml(printer.name)}</button><span class="status ${escapeHtml(statusKind)}">${escapeHtml(printerStatusLabel(printer))}</span>
       ${(printer.message || printer.attention?.message) ? `<span class="message">${escapeHtml(printer.message || printer.attention.message)}</span>` : ''}${progressBar(printer)}${telemetry}</div>`;
   }).join('');
+});
+
+closeBubble.addEventListener('click', () => window.spooly.hideBubble());
+
+bubble.addEventListener('click', (event) => {
+  const name = event.target.closest('.name');
+  if (name?.dataset.id) window.spooly.openPrinter(name.dataset.id);
 });
 
 bubble.addEventListener('mouseenter', () => window.spooly.setBubbleHovered(true));

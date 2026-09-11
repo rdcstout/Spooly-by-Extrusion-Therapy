@@ -161,3 +161,28 @@ test('DMG icons fit inside the configured installer window', () => {
     { x: 410, y: 180, type: 'link', path: '/Applications' },
   ]);
 });
+
+test('bubble offers a close button, clickable printer names, and the pet a hide context menu', () => {
+  const main = source('src/main.js');
+  const preload = source('src/preload.js');
+  const html = source('src/renderer/bubble.html');
+  const bubble = source('src/renderer/bubble.js');
+  const styles = source('src/renderer/bubble.css');
+  const pet = source('src/renderer/pet.js');
+  assert.match(html, /id="closeBubble"/);
+  assert.match(styles, /\.close-bubble \{[^}]*color:\s*#657174/);
+  assert.match(bubble, /closeBubble\.addEventListener\('click', \(\) => window\.spooly\.hideBubble\(\)\)/);
+  assert.match(bubble, /<button class="name" type="button" data-id="\$\{escapeHtml\(printer\.id\)\}"/);
+  assert.match(bubble, /window\.spooly\.openPrinter\(/);
+  assert.match(preload, /openPrinter: \(id\) => ipcRenderer\.send\('printer:open', id\)/);
+  assert.match(main, /ipcMain\.on\('printer:open'/);
+  assert.match(main, /printerWebUrl\(/);
+  assert.match(main, /bambuStudioCandidates\(/);
+  assert.match(pet, /pet\.addEventListener\('contextmenu', \(event\) => \{ event\.preventDefault\(\); window\.spooly\.openPetMenu\(\); \}\)/);
+  assert.match(preload, /openPetMenu: \(\) => ipcRenderer\.send\('pet:context-menu'\)/);
+  assert.match(main, /ipcMain\.on\('pet:context-menu'/);
+  assert.match(main, /label: 'Hide Spooly', click: hidePet/);
+  assert.doesNotMatch(main, /store\.set\('petHidden'/);
+  assert.match(main, /tray\.on\('click', togglePet\)/);
+  assert.match(main, /function togglePet\(\) \{[^}]*isVisible\(\) \? hidePet\(\) : petWindow\.show\(\)/);
+});

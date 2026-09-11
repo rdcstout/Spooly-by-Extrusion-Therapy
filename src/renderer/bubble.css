@@ -7,7 +7,13 @@ body.left { padding: 10px 16px 22px 10px; }
 .left .bubble:before { left: auto; right: 21px; transform: rotate(-18deg); }
 .row { min-width: 0; display: grid; align-content: center; grid-template-columns: minmax(0,1fr) auto; gap: 4px 10px; padding: 7px 0; border-bottom: 1px solid #ffffff24; }
 .row:last-child { border-bottom-color: transparent; }
-.row strong { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.row .name { min-width: 0; margin: 0; padding: 0; border: 0; background: none; color: inherit; font: inherit; font-weight: 700; text-align: left; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; cursor: pointer; }
+.row .name:hover { text-decoration: underline; }
+.row .name:focus { outline: none; }
+.close-bubble { position: fixed; z-index: 5; top: 13px; left: 19px; width: 18px; height: 18px; padding: 0; border: 0; outline: none; background: #000; color: #657174; font: 700 15px/18px ui-monospace, SFMono-Regular, Menlo, monospace; opacity: .6; cursor: pointer; }
+body.left .close-bubble { left: 13px; }
+.close-bubble:hover, .close-bubble:active { opacity: 1; }
+.close-bubble:focus { outline: none; }
 .status { color: #fff; font-weight: 700; }
 .status.printing, .status.complete { color: #55d43c; }
 .status.paused { color: #f1c93b; }

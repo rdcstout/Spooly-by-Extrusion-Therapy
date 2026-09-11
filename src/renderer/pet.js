@@ -277,7 +277,7 @@ pet.addEventListener('pointercancel', () => {
   stage.classList.remove('dragging');
   window.spooly.endDrag();
 });
-pet.addEventListener('contextmenu', (event) => { event.preventDefault(); window.spooly.openSettings(); });
+pet.addEventListener('contextmenu', (event) => { event.preventDefault(); window.spooly.openPetMenu(); });
 pet.addEventListener('mouseenter', () => {
   window.spooly.setPetHovered(true);
   if (dragging || !['idle', 'complete'].includes(currentVisualStatus) || current?.bouncing || hoverTriggered || completionActive) return;

@@ -27,6 +27,7 @@ const {
   shouldReportSetupConnection,
   storeConnectionStatus,
 } = require('./bambu-connection-status');
+const { printerWebUrl, bambuStudioCandidates } = require('./printer-links');
 
 const RELEASES_API = 'https://api.github.com/repos/rdcstout/Spooly-by-Extrusion-Therapy/releases/latest';
 const linuxTest = process.platform === 'linux' && /-linux\.test\./.test(app.getVersion());
@@ -496,6 +497,41 @@ function openSettings() {
   settingsWindow.on('closed', () => { settingsWindow = null; resizePet(store.get('scale')); });
 }
 
+// Session-only: a hidden mascot comes back on the next launch and via the
+// tray's "Show Spooly", so nobody loses him permanently.
+function hidePet() {
+  hideBubble(true);
+  petWindow?.hide();
+}
+
+function togglePet() {
+  if (!petWindow || petWindow.isDestroyed()) return;
+  petWindow.isVisible() ? hidePet() : petWindow.show();
+}
+
+function petMenuTemplate() {
+  return [
+    { label: 'Hide Spooly', click: hidePet },
+    { label: 'Setup…', click: openSettings },
+    { type: 'separator' },
+    { label: 'Quit', click: () => { app.isQuitting = true; app.quit(); } },
+  ];
+}
+
+async function openPrinter(id) {
+  const printer = store.get('printers').find((entry) => entry.id === id);
+  if (!printer) return;
+  if (printer.type === 'bambu') {
+    // Bambu printers have no web UI; open Bambu Studio when it is installed,
+    // otherwise stay silent rather than raising an OS "no app" dialog.
+    const installed = bambuStudioCandidates().find((candidate) => fsSync.existsSync(candidate));
+    if (installed) await shell.openPath(installed);
+    return;
+  }
+  const url = printerWebUrl(printer);
+  if (url) await shell.openExternal(url);
+}
+
 function createTray() {
   const trayImage = nativeImage
     .createFromPath(path.join(__dirname, '..', 'assets', 'trayTemplate.png'))
@@ -509,7 +545,7 @@ function createTray() {
     { type: 'separator' },
     { label: 'Quit', click: () => { app.isQuitting = true; app.quit(); } },
   ]));
-  tray.on('click', () => petWindow.show());
+  tray.on('click', togglePet);
 }
 
 function stopAdapters() {
@@ -691,6 +727,11 @@ ipcMain.on('update:open-release', (_event, url) => {
   if (releaseUrl.startsWith(RELEASES_PAGE_PREFIX)) shell.openExternal(releaseUrl);
 });
 ipcMain.on('settings:open', openSettings);
+ipcMain.on('pet:context-menu', () => {
+  if (!petWindow || petWindow.isDestroyed()) return;
+  Menu.buildFromTemplate(petMenuTemplate()).popup({ window: petWindow });
+});
+ipcMain.on('printer:open', (_event, id) => { openPrinter(String(id || '')).catch(() => {}); });
 ipcMain.on('external:extrusion-therapy', () => shell.openExternal('https://extrusiontherapy.com'));
 ipcMain.on('bubble:toggle', toggleBubble);
 ipcMain.on('bubble:hide', () => hideBubble(true));
