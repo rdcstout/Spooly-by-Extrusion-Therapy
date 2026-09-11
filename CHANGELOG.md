@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.1.18
+
+- Added Linux x86-64 `.deb` and AppImage packages, tested on Ubuntu with XWayland.
+- Fixed Bambu discovery on computers with multiple network adapters, including VPN adapters, by sending discovery requests independently on each interface.
+- Added Linux desktop integration and appropriately sized application and tray icons.
+
 ## 0.1.17
 
 - Limited setup connection messages and error codes to printers added during the current save.

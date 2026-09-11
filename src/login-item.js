@@ -1,4 +1,5 @@
 function shouldManageLoginItem({ isPackaged, platform, executablePath }) {
+  if (platform !== 'darwin' && platform !== 'win32') return false;
   if (!isPackaged) return false;
 
   // A packaged app opened directly from its DMG would leave macOS pointing at

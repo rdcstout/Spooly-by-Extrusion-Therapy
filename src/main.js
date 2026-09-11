@@ -29,11 +29,14 @@ const {
 } = require('./bambu-connection-status');
 
 const RELEASES_API = 'https://api.github.com/repos/rdcstout/Spooly-by-Extrusion-Therapy/releases/latest';
+const linuxTest = process.platform === 'linux' && /-linux\.test\./.test(app.getVersion());
+// Linux uses XWayland for the existing desktop placement behavior.
+if (process.platform === 'linux') app.commandLine.appendSwitch('ozone-platform', 'x11');
 const RELEASES_PAGE_PREFIX = 'https://github.com/rdcstout/Spooly-by-Extrusion-Therapy/releases/';
 
 // Keep development builds, packaged betas, upgrades, and reinstalls on one
 // stable configuration path. Removing Spooly.app does not remove this folder.
-app.setPath('userData', process.env.SPOOLY_USER_DATA || path.join(app.getPath('appData'), 'spooly'));
+app.setPath('userData', process.env.SPOOLY_USER_DATA || path.join(app.getPath('appData'), linuxTest ? 'spooly-linux-test' : 'spooly'));
 
 const hasSingleInstanceLock = app.requestSingleInstanceLock();
 if (!hasSingleInstanceLock) app.quit();
@@ -158,16 +161,19 @@ function runtimePrinters() {
 
 function settingsPayload() {
   return {
+    linuxTest,
+    supportsLaunchAtLogin: process.platform !== 'linux',
     version: app.getVersion(),
     printers: runtimePrinters(),
     scale: store.get('scale'),
-    launchAtLogin: store.get('launchAtLogin'),
-    automaticUpdates: store.get('automaticUpdates'),
+    launchAtLogin: process.platform === 'linux' ? false : store.get('launchAtLogin'),
+    automaticUpdates: linuxTest ? false : store.get('automaticUpdates'),
     connectionStatuses: [...printerConnectionStatuses.values()],
   };
 }
 
 async function fetchLatestRelease() {
+  if (linuxTest) throw new Error('Private Linux test: no public Linux update channel is available yet.');
   const response = await net.fetch(RELEASES_API, {
     headers: { Accept: 'application/vnd.github+json' },
   });
@@ -202,6 +208,7 @@ async function runAutomaticUpdateCheck() {
 }
 
 function scheduleAutomaticUpdateChecks() {
+  if (linuxTest) return;
   clearInterval(automaticUpdateTimer);
   automaticUpdateTimer = setInterval(runAutomaticUpdateCheck, 60 * 60 * 1000);
   setTimeout(runAutomaticUpdateCheck, 15000);
@@ -294,6 +301,7 @@ function createBubbleWindow() {
   bubbleWindow = new BrowserWindow({
     width: 292, height: 160, transparent: true, frame: false, resizable: false,
     alwaysOnTop: true, skipTaskbar: true, hasShadow: false, show: false,
+    focusable: process.platform !== 'linux',
     webPreferences: { preload: path.join(__dirname, 'preload.js'), contextIsolation: true, nodeIntegration: false },
   });
   bubbleWindow.setAlwaysOnTop(true, 'floating');
@@ -491,8 +499,8 @@ function openSettings() {
 function createTray() {
   const trayImage = nativeImage
     .createFromPath(path.join(__dirname, '..', 'assets', 'trayTemplate.png'))
-    .resize({ width: 18, height: 18 });
-  trayImage.setTemplateImage(true);
+    .resize(process.platform === 'linux' ? { width: 32, height: 32 } : { width: 18, height: 18 });
+  trayImage.setTemplateImage(process.platform !== 'linux');
   tray = new Tray(trayImage);
   tray.setToolTip('Spooly');
   tray.setContextMenu(Menu.buildFromTemplate([

@@ -2,6 +2,12 @@
 .pnpm-store/
 node_modules/
 dist/
+dist-linux-release/
+dist-linux-test/
+dist-windows-release/
+appimagetool-*.AppImage
+Spooly-*.deb
+Spooly-*.AppImage
 outputs/
 work/
 assets/experiments/

@@ -4,6 +4,17 @@ const scale = document.querySelector('#scale');
 const scaleOut = document.querySelector('#scaleOut');
 const launch = document.querySelector('#launch');
 const automaticUpdates = document.querySelector('#automaticUpdates');
+window.spooly.getSettings().then((settings) => {
+  if (settings.supportsLaunchAtLogin === false) {
+    launch.disabled = true;
+    launch.checked = false;
+    launch.title = 'Automatic launch at login is not yet supported on Linux.';
+  }
+  if (!settings.linuxTest) return;
+  document.title = 'Spooly Linux Test';
+  automaticUpdates.disabled = true;
+  automaticUpdates.title = 'No public Linux update channel is available yet.';
+});
 const existingPrinterIds = new Set();
 const MIN_SCALE = .65;
 const MAX_SCALE = 1.1;
@@ -146,8 +157,11 @@ function addPrinter(data = {}, { prepend = false, focus = false } = {}) {
         button.textContent = 'Scan local network';
         results.textContent = 'BAMBU-DISCOVERY-01 — No Bambu printers answered the scan. Try manual entry.';
       }
-    } catch (_) {
+    } catch (error) {
       button.textContent = 'Scan failed — try manual entry';
+      results.textContent = String(error?.message || '').includes('BAMBU-DISCOVERY-02')
+        ? 'BAMBU-DISCOVERY-02 — Could not send discovery requests. Check your network adapter connection and try again.'
+        : 'BAMBU-DISCOVERY-03 — The scan could not complete. Try again or enter the printer manually.';
     } finally {
       button.disabled = false;
       if (button.textContent === 'Scanning…') button.textContent = 'Scan local network';

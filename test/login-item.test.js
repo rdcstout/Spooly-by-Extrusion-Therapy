@@ -1,6 +1,10 @@
 const test = require('node:test');
 const assert = require('node:assert/strict');
 const { shouldManageLoginItem, syncLaunchAtLogin } = require('../src/login-item');
+test('Linux never invokes the unsupported native login-item API', () => {
+  const electronApp = { isPackaged: true, getPath: () => '/tmp/spooly-test/spooly' };
+  assert.equal(syncLaunchAtLogin(electronApp, true, 'linux'), false);
+});
 
 test('development Electron never manages the operating-system login item', () => {
   const calls = [];

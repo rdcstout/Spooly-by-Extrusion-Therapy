@@ -21,8 +21,12 @@
 | --- | --- | --- |
 | **macOS** | Apple silicon | **[Download `.dmg`](https://github.com/rdcstout/Spooly-by-Extrusion-Therapy/releases/latest/download/Spooly-macOS-arm64.dmg)** |
 | **Windows** | 64-bit | **[Download installer `.exe`](https://github.com/rdcstout/Spooly-by-Extrusion-Therapy/releases/latest/download/Spooly-Setup-Windows-x64.exe)** |
+| **Linux** | x86-64 Ubuntu | **[Download `.deb`](https://github.com/rdcstout/Spooly-by-Extrusion-Therapy/releases/latest/download/Spooly-Linux-amd64.deb)** |
+| **Linux AppImage** | x86-64 | **[Download setup bundle](https://github.com/rdcstout/Spooly-by-Extrusion-Therapy/releases/latest/download/Spooly-Linux-AppImage-Setup.tar.gz)** |
 
 Spooly is free. Downloads are never gated behind payment. You can also browse the [latest GitHub release](../../releases/latest).
+
+Linux was tested on Ubuntu 26.04.1 using XWayland. See the [Linux installation guide](docs/LINUX_INSTALL.md), including the AppImage's one-time setup on Ubuntu.
 
 > **Installation note:** Starting with version 0.1.12, the macOS build is signed with an Apple Developer ID and notarized by Apple. macOS may still show its standard first-open confirmation for an app downloaded from the internet. The Windows build is not yet signed with a Microsoft code-signing certificate, so Windows SmartScreen may ask you to confirm that you want to run it. See the [macOS installation guide](docs/MAC_BETA_INSTALL.md).
 
@@ -39,7 +43,7 @@ Spooly is a small, always-on-top desktop pet that watches supported printers on 
 - Part, auxiliary, and chamber fan states when the printer reports them
 - Animated mascot reactions and automatic attention bubbles
 - Local-network discovery for Bambu Lab and Moonraker-compatible printers
-- Multiple-printer monitoring, duplicate detection, configuration backup/restore, adjustable mascot size, launch at login, and optional weekly update checks
+- Multiple-printer monitoring, duplicate detection, configuration backup/restore, adjustable mascot size, launch at login on macOS/Windows, and optional weekly update checks
 - Read-only monitoring: Spooly does not start, pause, stop, or modify prints
 
 ## Compatibility
@@ -58,7 +62,7 @@ Other Bambu Lab and Moonraker-compatible machines may work because they use the 
 
 ## How it works
 
-Spooly runs on your Mac or Windows PC and connects directly to configured printers on the same local network. Bambu connections use the printer's local MQTT-over-TLS service. Klipper connections use Moonraker's local HTTP API. There is no Spooly account, cloud relay, analytics service, or telemetry collection.
+Spooly runs on macOS, Windows, or supported Linux systems and connects directly to configured printers on the same local network. Bambu connections use the printer's local MQTT-over-TLS service. Klipper connections use Moonraker's local HTTP API. There is no Spooly account, cloud relay, analytics service, or telemetry collection.
 
 Printer configuration stays on the computer under the current operating-system user account. Spooly has no account system, cloud service, advertising, or analytics. Read the full [privacy and local-data note](PRIVACY.md).
 
