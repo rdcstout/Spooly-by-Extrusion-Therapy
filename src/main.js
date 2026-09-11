@@ -9,6 +9,7 @@ const { BambuAdapter } = require('./adapters/bambu');
 const { scanBambuPrinters } = require('./discovery/bambu');
 const { scanMoonrakerPrinters } = require('./discovery/moonraker');
 const { dedupePrinters, samePrinterConfiguration } = require('./printers');
+const { formatAdapterError } = require('./adapter-errors');
 const {
   clampBoundsToWorkArea,
   fixedSizeDragBounds,
@@ -580,7 +581,7 @@ async function configureAdapters(setupPrinterIds = new Set(), { preserveUnchange
         const state = await adapter.read();
         if (adapters.includes(adapter)) { setState(state); markConnected(adapter.config); }
       } catch (error) {
-        if (adapters.includes(adapter)) setState({ id: adapter.config.id, name: adapter.config.name, type: 'moonraker', status: 'offline', message: error.message });
+        if (adapters.includes(adapter)) setState({ id: adapter.config.id, name: adapter.config.name, type: 'moonraker', status: 'offline', message: formatAdapterError(error) });
       }
     }));
   };

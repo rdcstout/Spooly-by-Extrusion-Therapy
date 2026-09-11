@@ -5,8 +5,24 @@ class MoonrakerAdapter {
   }
 
   get baseUrl() {
-    const host = this.config.host.replace(/^https?:\/\//, '');
-    return `http://${host}:${this.config.port || 7125}`;
+    const raw = String(this.config.host || '').trim().replace(/\/+$/, '');
+    const schemeMatch = /^(https?):\/\//.exec(raw);
+    const authority = raw.replace(/^https?:\/\//, '');
+    const portMatch = /:(\d+)$/.exec(authority);
+    const host = portMatch ? authority.slice(0, -portMatch[0].length) : authority;
+    // A LAN address - a bare IPv4, "localhost", an mDNS ".local" name, or a
+    // single-label hostname - is a direct Moonraker box, so it keeps the
+    // historical http + 7125 default. Anything with a real domain suffix is
+    // almost always a reverse proxy on 80/443, so it defaults to https and
+    // never gets 7125 forced onto it. An explicitly typed scheme always wins.
+    const isLanHost = /^(\d{1,3}\.){3}\d{1,3}$/.test(host)
+      || host === 'localhost'
+      || /\.local$/i.test(host)
+      || !host.includes('.');
+    const scheme = schemeMatch ? schemeMatch[1] : (isLanHost ? 'http' : 'https');
+    const port = portMatch ? portMatch[1]
+      : (this.config.port || (scheme === 'http' && isLanHost ? 7125 : null));
+    return port ? `${scheme}://${host}:${port}` : `${scheme}://${host}`;
   }
 
   async discoverExtruders() {
