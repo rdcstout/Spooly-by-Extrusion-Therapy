@@ -4,29 +4,53 @@ Spooly provides x86-64 Linux packages. Tested on Ubuntu 26.04.1 with XWayland; o
 
 ## Ubuntu: recommended .deb
 
-Download the `.deb` from the release and install it using your package installer, or:
+1. [Download the DEB](https://github.com/rdcstout/Spooly-by-Extrusion-Therapy/releases/latest/download/Spooly-Linux-amd64.deb).
+2. Open it with your package installer and enter your administrator password if asked.
+3. Launch **Spooly** from the applications menu.
+
+Prefer Terminal? Open Terminal in the download folder and run:
 
 ```sh
 sudo apt install ./Spooly-Linux-amd64.deb
 ```
 
-Enter your administrator password when requested. Launch **Spooly** from the applications menu. Installing a newer package preserves your printer settings. Remove the application with `sudo apt remove spooly`; your user settings remain.
-
 ## AppImage
 
-On systems permitting unprivileged user namespaces, make the AppImage executable and run it normally. Do not launch Spooly with sudo or disable its sandbox.
+For Ubuntu, use the setup bundle:
 
-On Ubuntu systems restricting user namespaces, download and extract the **AppImage setup bundle**. Keep its files together and run:
+1. [Download the AppImage setup bundle](https://github.com/rdcstout/Spooly-by-Extrusion-Therapy/releases/latest/download/Spooly-Linux-AppImage-Setup.tar.gz) and extract it.
+2. Open Terminal in the extracted folder. Keep the files together and run:
 
-```sh
-bash install-linux-appimage.sh ./Spooly-Linux-x86_64.AppImage
-```
+   ```sh
+   bash install-linux-appimage.sh ./Spooly-Linux-x86_64.AppImage
+   ```
 
-This asks for administrator permission once. It installs a root-owned copy at `/opt/spooly-appimage/Spooly.AppImage`, adds an application-menu entry, and permits user namespaces only for that installed path when Ubuntu requires it. It does not change global namespace or firewall settings.
+3. Enter your administrator password when asked.
+4. Launch **Spooly (AppImage)** from the applications menu.
 
-After setup, launch **Spooly (AppImage)** from the applications menu, not the original download. To update, quit Spooly and rerun the installer with the new AppImage. Configuration is preserved. Run `bash uninstall-linux-appimage.sh` from the setup bundle to remove the integrated app and its rule; user settings remain.
+On systems that permit sandbox user namespaces, you can instead [download the standalone AppImage](https://github.com/rdcstout/Spooly-by-Extrusion-Therapy/releases/latest/download/Spooly-Linux-x86_64.AppImage), make it executable, and open it. Do not run the app with sudo or disable its sandbox.
 
-## Building
+<details>
+<summary>Updating or removing Spooly</summary>
+
+- **Update:** Quit Spooly, then install the newer DEB or rerun the AppImage setup with the new AppImage. Printer settings are preserved.
+- **Remove DEB:** Run `sudo apt remove spooly`.
+- **Remove installed AppImage:** Run `bash uninstall-linux-appimage.sh` from the extracted setup bundle.
+- **Remove standalone AppImage:** Delete the downloaded file.
+
+Removal leaves your user settings in place.
+
+</details>
+
+<details>
+<summary>What the AppImage setup does</summary>
+
+Installs a root-owned copy at `/opt/spooly-appimage/Spooly.AppImage`, adds an applications-menu entry, and permits sandbox user namespaces for that path when Ubuntu requires it. It does not change global namespace or firewall settings. After setup, launch the menu entry, not the original download.
+
+</details>
+
+<details>
+<summary>Building from source (developers only)</summary>
 
 Build on x86-64 Ubuntu with Node.js, pnpm, Python 3/GObject GdkPixbuf, `dpkg-deb`, `desktop-file-validate`, and AppImage's `appimagetool` installed. The .deb dependency names target modern Ubuntu (t64 libraries).
 
@@ -37,3 +61,5 @@ APPIMAGETOOL=/absolute/path/to/appimagetool-x86_64.AppImage pnpm run dist:linux
 ```
 
 The build starts with the checked-out source, not an installed Spooly or private test application. No printer configuration is included. See the release checksums to verify downloaded packages.
+
+</details>
