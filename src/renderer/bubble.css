@@ -27,3 +27,5 @@ body.left { padding: 10px 16px 22px 10px; }
 .resize-handle { position: fixed; z-index: 5; top: 11px; right: 11px; width: 19px; height: 19px; padding: 0; border: 0; outline: none; border-radius: 0 13px 0 0; background: repeating-linear-gradient(135deg, transparent 0 4px, #657174 4px 6px); opacity: .7; cursor: nesw-resize; touch-action: none; }
 .resize-handle:hover, .resize-handle:active { opacity: 1; }
 .resize-handle:focus { outline: none; }
+.network-help { font: inherit; color: inherit; background: none; border: 0; padding: 0; cursor: pointer; text-decoration: underline; }
+.network-help:focus-visible { outline: 1px solid currentColor; }

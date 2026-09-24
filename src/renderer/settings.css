@@ -63,3 +63,8 @@ dialog li { margin-bottom: 12px; line-height: 1.4; }
 .update-actions { display: flex; align-items: center; gap: 10px; margin-top: 12px; }
 #updateStatus { color: #9fb2b6; font-size: 12px; }
 .link-button { padding: 0; border: 0; background: transparent; color: #54e4ea; text-decoration: underline; }
+#networkHelp[hidden] { display: none; }
+#networkHelp summary { cursor: pointer; color: #54e4ea; font-weight: 700; }
+#networkHelp p { margin-top: 12px; line-height: 1.5; }
+#networkHelp .backup-actions { flex-wrap: wrap; }
+#networkResult { margin-top: 12px; font-size: 13px; }

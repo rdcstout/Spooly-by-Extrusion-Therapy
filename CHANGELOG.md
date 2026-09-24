@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.1.19
+
+- Added macOS network-permission troubleshooting in Setup, with a Privacy Settings button and a saved-printer connection check.
+- Failed scans and setup connections now reveal the Mac troubleshooting steps. When all printers are offline, click the popup’s Offline information link for help.
+- Added a clear explanation to the macOS local-network permission prompt.
+
 ## 0.1.18
 
 - Added Linux x86-64 `.deb` and AppImage packages, tested on Ubuntu with XWayland.

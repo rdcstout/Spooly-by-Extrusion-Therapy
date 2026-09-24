@@ -4,7 +4,49 @@ const scale = document.querySelector('#scale');
 const scaleOut = document.querySelector('#scaleOut');
 const launch = document.querySelector('#launch');
 const automaticUpdates = document.querySelector('#automaticUpdates');
+let supportsNetworkHelp = false;
+function revealNetworkHelp() {
+  if (!supportsNetworkHelp) return;
+  document.querySelector('#networkHelpDetails').open = true;
+  document.querySelector('#networkHelp').scrollIntoView({ block: 'start' });
+}
+window.spooly.onNetworkHelp(() => {
+  window.spooly.getSettings().then((settings) => {
+    supportsNetworkHelp = settings.supportsNetworkHelp === true;
+    document.querySelector('#networkHelp').hidden = !supportsNetworkHelp;
+    revealNetworkHelp();
+  });
+});
+document.querySelector('#networkSettings').addEventListener('click', async () => {
+  try { await window.spooly.openNetworkSettings(); }
+  catch (_) { document.querySelector('#networkResult').textContent = 'Open System Settings → Privacy & Security → Local Network manually.'; }
+});
+document.querySelector('#networkRetry').addEventListener('click', async (event) => {
+  const button = event.currentTarget;
+  const output = document.querySelector('#networkResult');
+  button.disabled = true;
+  output.textContent = 'Checking saved printer addresses…';
+  try {
+    const results = await window.spooly.checkNetwork();
+    output.replaceChildren();
+    if (!results.length) output.textContent = 'Add a printer and Save & connect first, or try Scan after checking permission.';
+    const messages = {
+      reachable: 'Network connection succeeded. This does not verify the access code or printer data. Spooly continues reconnecting automatically.',
+      blocked: 'Network access was denied. Check Local Network permission above; another security tool could also block access.',
+      unreachable: 'Could not reach this address. Check power, IP address, network, and Local Network permission—even if it already says On.',
+      invalid: 'The saved address or port is invalid. Correct it and Save & connect.',
+    };
+    for (const result of results) {
+      const line = document.createElement('p');
+      line.textContent = `${result.name}: ${messages[result.result] || messages.unreachable}`;
+      output.append(line);
+    }
+  } catch (_) { output.textContent = 'The check could not complete. Check Local Network permission and try again.'; }
+  finally { button.disabled = false; }
+});
 window.spooly.getSettings().then((settings) => {
+  supportsNetworkHelp = settings.supportsNetworkHelp === true;
+  document.querySelector('#networkHelp').hidden = !supportsNetworkHelp;
   if (settings.supportsLaunchAtLogin === false) {
     launch.disabled = true;
     launch.checked = false;
@@ -59,6 +101,7 @@ function revealDuplicate(card, results, name) {
 }
 
 function showConnectionStatus(value) {
+  if (value?.phase === 'failed') revealNetworkHelp();
   const card = [...list.children].find((entry) => entry.dataset.id === value?.id);
   if (!card) return;
   const output = card.querySelector('.connection-status');
@@ -116,9 +159,10 @@ function addPrinter(data = {}, { prepend = false, focus = false } = {}) {
         choice.addEventListener('click', () => selectPrinter(printer));
         results.append(choice);
       });
-      else button.textContent = 'No Moonraker printers found — try manual entry';
+      else { button.textContent = 'No Moonraker printers found — try manual entry'; revealNetworkHelp(); }
     } catch (_) {
       button.textContent = 'Scan failed — try manual entry';
+      revealNetworkHelp();
     } finally {
       button.disabled = false;
       if (button.textContent === 'Scanning…') button.textContent = 'Scan local network';
@@ -156,9 +200,11 @@ function addPrinter(data = {}, { prepend = false, focus = false } = {}) {
       else {
         button.textContent = 'Scan local network';
         results.textContent = 'BAMBU-DISCOVERY-01 — No Bambu printers answered the scan. Try manual entry.';
+        revealNetworkHelp();
       }
     } catch (error) {
       button.textContent = 'Scan failed — try manual entry';
+      revealNetworkHelp();
       results.textContent = String(error?.message || '').includes('BAMBU-DISCOVERY-02')
         ? 'BAMBU-DISCOVERY-02 — Could not send discovery requests. Check your network adapter connection and try again.'
         : 'BAMBU-DISCOVERY-03 — The scan could not complete. Try again or enter the printer manually.';

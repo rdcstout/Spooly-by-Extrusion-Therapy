@@ -22,6 +22,7 @@ const { migrateLegacyCredentials, preparePrintersForStorage } = require('./crede
 const { compareVersions } = require('./update-check');
 const { shouldNotifyForUpdate, shouldRunAutomaticUpdate } = require('./update-schedule');
 const { printerStatusLabel } = require('./status-label');
+const { showNetworkHelp, checkConnections } = require('./network-help');
 const {
   nextPendingSetupPrinters,
   shouldReportSetupConnection,
@@ -161,6 +162,7 @@ function runtimePrinters() {
 
 function settingsPayload() {
   return {
+    supportsNetworkHelp: process.platform === 'darwin',
     linuxTest,
     supportsLaunchAtLogin: process.platform !== 'linux',
     version: app.getVersion(),
@@ -222,6 +224,7 @@ function snapshot() {
     : null;
   return {
     ...aggregate,
+    networkHelp: showNetworkHelp(process.platform, printers),
     bouncing: Boolean(alertKey && alertKey !== acknowledgedKey),
     onboarded: store.get('onboarded'),
   };
@@ -618,6 +621,22 @@ ipcMain.handle('snapshot:get', () => snapshot());
 ipcMain.handle('bambu:scan', () => scanBambuPrinters());
 ipcMain.handle('moonraker:scan', () => scanMoonrakerPrinters());
 ipcMain.handle('settings:get', settingsPayload);
+let networkCheck = null;
+ipcMain.handle('network:check', () => {
+  if (process.platform !== 'darwin') return [];
+  if (!networkCheck) networkCheck = checkConnections(runtimePrinters()).finally(() => { networkCheck = null; });
+  return networkCheck;
+});
+ipcMain.handle('network:open-settings', async () => {
+  if (process.platform !== 'darwin') return false;
+  await shell.openExternal('x-apple.systempreferences:com.apple.preference.security?Privacy_LocalNetwork');
+  return true;
+});
+ipcMain.on('network:help', () => {
+  openSettings();
+  if (settingsWindow.webContents.isLoading()) settingsWindow.webContents.once('did-finish-load', () => settingsWindow?.webContents.send('network:show-help'));
+  else settingsWindow.webContents.send('network:show-help');
+});
 ipcMain.handle('settings:export', async () => {
   const result = await dialog.showSaveDialog(settingsWindow, {
     title: 'Export Spooly configuration',

@@ -1,6 +1,6 @@
 {
   "name": "spooly",
-  "version": "0.1.18",
+  "version": "0.1.19",
   "author": "Extrusion Therapy",
   "description": "A desktop pet that watches your 3D printers.",
   "main": "src/main.js",
@@ -64,7 +64,10 @@
       "hardenedRuntime": true,
       "gatekeeperAssess": false,
       "entitlements": "build/entitlements.mac.plist",
-      "entitlementsInherit": "build/entitlements.mac.plist"
+      "entitlementsInherit": "build/entitlements.mac.plist",
+      "extendInfo": {
+        "NSLocalNetworkUsageDescription": "Spooly needs local network access to find your 3D printers and display their status."
+      }
     },
     "dmg": {
       "title": "Spooly ${version}",

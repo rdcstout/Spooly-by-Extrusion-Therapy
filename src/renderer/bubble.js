@@ -60,9 +60,16 @@ window.spooly.onBubbleUpdate(({ snapshot, side, layout }) => {
       ? `<span class="telemetry">${telemetryItems.join('')}</span>`
       : '';
     const statusKind = printer.attention?.type === 'stopped' ? 'stopped' : printer.status;
-    return `<div class="row"><strong>${escapeHtml(printer.name)}</strong><span class="status ${escapeHtml(statusKind)}">${escapeHtml(printerStatusLabel(printer))}</span>
+    const statusText = snapshot.networkHelp
+      ? '<button class="network-help" type="button" title="Can’t connect? Open network help" aria-label="Offline — open network connection help">OFFLINE ⓘ</button>'
+      : escapeHtml(printerStatusLabel(printer));
+    return `<div class="row"><strong>${escapeHtml(printer.name)}</strong><span class="status ${escapeHtml(statusKind)}">${statusText}</span>
       ${(printer.message || printer.attention?.message) ? `<span class="message">${escapeHtml(printer.message || printer.attention.message)}</span>` : ''}${progressBar(printer)}${telemetry}</div>`;
   }).join('');
+});
+
+bubble.addEventListener('click', (event) => {
+  if (event.target.closest('.network-help')) window.spooly.openNetworkHelp();
 });
 
 bubble.addEventListener('mouseenter', () => window.spooly.setBubbleHovered(true));
