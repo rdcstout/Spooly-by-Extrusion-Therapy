@@ -22,7 +22,7 @@
     "mqtt": "^5.10.4"
   },
   "devDependencies": {
-    "electron": "43.2.0",
+    "electron": "43.5.0",
     "electron-builder": "^25.1.8"
   },
   "build": {
