@@ -225,13 +225,13 @@ function addPrinter(data = {}, { prepend = false, focus = false } = {}) {
       });
       else {
         button.textContent = usingFallback ? 'Find printers' : 'Scan local network';
-        results.textContent = usingFallback ? 'No printers found through Bambu Fallback. Check that your printer appears in Bambu Studio.' : 'BAMBU-DISCOVERY-01 — No Bambu printers answered the scan. Try manual entry.';
+        results.textContent = usingFallback ? 'No printers found through Bambu Fallback. Check that your printer is online, then try again.' : 'BAMBU-DISCOVERY-01 — No Bambu printers answered the scan. Try manual entry.';
         if (!usingFallback) revealNetworkHelp();
       }
     } catch (error) {
       if (usingFallback) {
         button.textContent = 'Find printers';
-        results.textContent = 'BAMBU-FALLBACK-01 — Could not find printers. Check your internet connection and Bambu Studio sign-in.';
+        results.textContent = 'BAMBU-FALLBACK-01 — Could not find printers. Check your internet connection and that the printer is online.';
         return;
       }
       button.textContent = 'Scan failed — try manual entry';

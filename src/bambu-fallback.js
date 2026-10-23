@@ -132,7 +132,7 @@ function listPrinters() {
     let child, timer, done = false;
     const finish = (printers, error) => {
       if (done) return;done = true;clearTimeout(timer);child?.kill();
-      if (error) reject(new Error('Bambu Fallback could not find printers. Check your internet connection and Bambu Studio sign-in.'));
+      if (error) reject(new Error('Bambu Fallback could not find printers. Check your internet connection and that the printer is online.'));
       else resolve(printers);
     };
     try {

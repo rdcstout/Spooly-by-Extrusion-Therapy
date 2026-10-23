@@ -66,7 +66,7 @@ This experimental option may provide another way to connect if you're having dif
 - Printer firmware version
 - Computer operating system
 - Whether the printer is in normal, LAN Only, or Developer Mode
-- Whether Bambu Studio can see the printer locally
+- Whether your slicer can connect to the printer
 - The exact Spooly error message
 
 Never post your access code publicly.

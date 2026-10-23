@@ -24,11 +24,7 @@
 | **Linux** | x86-64 Ubuntu | **[Download `.deb`](https://github.com/rdcstout/Spooly-by-Extrusion-Therapy/releases/latest/download/Spooly-Linux-amd64.deb)** |
 | **Linux AppImage** | x86-64 | **[Download setup bundle](https://github.com/rdcstout/Spooly-by-Extrusion-Therapy/releases/latest/download/Spooly-Linux-AppImage-Setup.tar.gz)** |
 
-Spooly is free. Downloads are never gated behind payment. You can also browse the [latest GitHub release](../../releases/latest).
-
-Linux was tested on Ubuntu 26.04.1 using XWayland. See the [Linux installation guide](docs/LINUX_INSTALL.md), including the AppImage's one-time setup on Ubuntu.
-
-> **Installation note:** Starting with version 0.1.12, the macOS build is signed with an Apple Developer ID and notarized by Apple. macOS may still show its standard first-open confirmation for an app downloaded from the internet. The Windows build is not yet signed with a Microsoft code-signing certificate, so Windows SmartScreen may ask you to confirm that you want to run it. See the [macOS installation guide](docs/MAC_BETA_INSTALL.md).
+Free downloads. [Release notes](../../releases/latest) · [macOS installation](docs/MAC_BETA_INSTALL.md) · [Windows installation](docs/WINDOWS_INSTALL.md) · [Linux installation](docs/LINUX_INSTALL.md).
 
 ## See your printers without keeping every slicer open
 
@@ -52,7 +48,7 @@ Spooly is a small, always-on-top desktop pet that watches supported printers on 
 | **Bambu Lab** | Discovery, status, progress, temperatures, and reported fans. |
 | **Klipper / Moonraker** | Discovery and monitoring through Moonraker. |
 
-> **Snapmaker U1 with Paxx12 firmware:** If Spooly reports `Moonraker returned 401`, Moonraker's **Require Login** option is enabled. The current Spooly release does not yet support authenticated Moonraker connections. Open `http://<printer-ip>/firmware-config/` and disable **Require Login** to connect. Optional Moonraker API-key support is planned for a future update.
+For Snapmaker U1 with Paxx12 firmware, see the [Moonraker setup guide](docs/KLIPPER_SETUP.md#snapmaker-u1-with-paxx12-firmware).
 
 For help connecting your printer, open a [printer compatibility report](../../issues/new?template=printer_compatibility.yml).
 
@@ -69,23 +65,7 @@ Spooly is free and open source. If it helps in your shop, you can optionally **[
 
 ## Build from source
 
-Requirements: Node.js 20 or newer and pnpm.
-
-```sh
-corepack enable
-pnpm install --frozen-lockfile
-pnpm test
-pnpm start
-```
-
-Packaging commands:
-
-```sh
-pnpm run dist:mac
-pnpm run dist:win
-```
-
-The macOS command requires macOS and Xcode command-line tools. Before Windows packaging, run `scripts\build-fallback-windows.cmd` on Windows with Node.js and MSVC x64 Build Tools installed. It builds the native helper into `build/fallback/win32-x64`; copy that output into the same source checkout if cross-packaging with Electron Builder. See the [Linux guide](docs/LINUX_INSTALL.md) for Linux builds. Vendor networking libraries are not bundled.
+See [development and packaging instructions](CONTRIBUTING.md#development).
 
 ## Contributing
 

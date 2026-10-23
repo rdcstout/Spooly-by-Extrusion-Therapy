@@ -1,13 +1,13 @@
 # Privacy and local data
 
-Spooly normally connects to printers on your local network. It has no Spooly account, cloud backend, analytics, advertising SDK, crash-report upload, or usage telemetry. The optional experimental Bambu Fallback connection uses Bambu's cloud service through your existing Bambu Studio session.
+Spooly stores printer configuration locally. The optional experimental Bambu Fallback connection contacts Bambu's service for printer status.
 
 ## Network traffic
 
 Spooly contacts only:
 
 - Bambu printers configured or discovered on the local network, using local MQTT over TLS on port 8883.
-- Bambu's service when Bambu Fallback is selected. Spooly checks the locally available Studio session to determine whether that option is available. It does not ask for your Bambu account password.
+- Bambu's service when Bambu Fallback is selected.
 - Moonraker-compatible printers configured or discovered on the local network, using the Moonraker HTTP API (normally port 7125).
 - GitHub's public Releases API when the user checks manually or when the optional weekly update check is due. The request checks only the published Spooly version and does not include printer configuration.
 - `extrusiontherapy.com` only when the user clicks the Extrusion Therapy link in Setup; this opens the system browser.
@@ -25,7 +25,7 @@ The containing folder and configuration file are created with user-only permissi
 
 ## Configuration backups
 
-Bambu Fallback uses a private temporary copy of the existing Studio session while connecting. It is not included in Spooly configuration backups or installers and is removed when the helper closes normally. The original Studio session is not modified.
+Bambu Fallback's temporary authentication data is excluded from configuration backups and installers and removed when its helper closes normally.
 
 An exported Spooly configuration backup includes the information needed to reconnect to configured printers. Keep backups private and do not attach them to public GitHub issues.
 
