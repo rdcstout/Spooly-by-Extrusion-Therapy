@@ -47,23 +47,21 @@ Spooly is a small, always-on-top desktop pet that watches supported printers on 
 
 ## Compatibility
 
-| Connection | Verified hardware | What to expect |
-| --- | --- | --- |
-| **Bambu local MQTT** | X1 Carbon, H2S | Local discovery, status, progress, temperatures, and reported fans. An access code and serial number are required. |
-| **Klipper / Moonraker** | Snapmaker U1 | Local discovery and monitoring through Moonraker's HTTP API. |
+| Connection | What to expect |
+| --- | --- |
+| **Bambu Lab** | Discovery, status, progress, temperatures, and reported fans. |
+| **Klipper / Moonraker** | Discovery and monitoring through Moonraker. |
 
 > **Snapmaker U1 with Paxx12 firmware:** If Spooly reports `Moonraker returned 401`, Moonraker's **Require Login** option is enabled. The current Spooly release does not yet support authenticated Moonraker connections. Open `http://<printer-ip>/firmware-config/` and disable **Require Login** to connect. Optional Moonraker API-key support is planned for a future update.
 
-Other Bambu Lab and Moonraker-compatible machines may work because they use the same protocols, but they have not all been physically verified. If Spooly discovers your printer but cannot monitor it correctly, please open a [printer compatibility report](../../issues/new?template=printer_compatibility.yml).
+For help connecting your printer, open a [printer compatibility report](../../issues/new?template=printer_compatibility.yml).
 
 - [Bambu Lab setup guide](docs/BAMBU_SETUP.md)
 - [Klipper / Moonraker setup guide](docs/KLIPPER_SETUP.md)
 
 ## How it works
 
-Spooly connects to supported printers on your local network. If you're having difficulty connecting to your Bambu printer, experimental **Bambu (Fallback)** may provide another way to connect. See the [setup guide](docs/BAMBU_SETUP.md#experimental-bambu-fallback).
-
-Printer configuration stays on the computer under the current operating-system user account. Spooly has no account system, cloud service, advertising, or analytics. Read the full [privacy and local-data note](PRIVACY.md).
+Add your printers in Setup, then click Spooly to see their status, progress, temperatures, and fans. Spooly reacts when a printer needs attention or finishes a print. If you're having difficulty connecting to your Bambu printer, experimental **Bambu (Fallback)** may provide another way to connect. See the [setup guide](docs/BAMBU_SETUP.md#experimental-bambu-fallback).
 
 ## Support future tools
 
