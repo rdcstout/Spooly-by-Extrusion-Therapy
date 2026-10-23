@@ -58,7 +58,7 @@ Bambu's security documentation explains that Developer Mode allows third-party M
 
 If the regular Bambu connection does not work, try **Bambu (Fallback)** in the printer-type menu, then **Find printers**, select your printer, and **Save & connect**.
 
-This option is available only when Spooly finds a compatible installed Bambu Studio session. Open Studio and sign in there first if necessary, then reopen Spooly Setup. Fallback needs an internet connection and a cloud-connected printer; it does not replace the normal connection for LAN Only printers. No additional login is entered in Spooly. See [privacy details](../PRIVACY.md).
+This experimental option may provide another way to connect if you're having difficulty with the regular Bambu connection. If it is unavailable, the option will be disabled.
 
 ## Information to collect when asking for help
 

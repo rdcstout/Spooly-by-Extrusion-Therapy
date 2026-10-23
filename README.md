@@ -44,7 +44,6 @@ Spooly is a small, always-on-top desktop pet that watches supported printers on 
 - Animated mascot reactions and automatic attention bubbles
 - Local-network discovery for Bambu Lab and Moonraker-compatible printers
 - Multiple-printer monitoring, duplicate detection, configuration backup/restore, adjustable mascot size, launch at login on macOS/Windows, and optional weekly update checks
-- Read-only monitoring: Spooly does not start, pause, stop, or modify prints
 
 ## Compatibility
 
@@ -62,7 +61,7 @@ Other Bambu Lab and Moonraker-compatible machines may work because they use the 
 
 ## How it works
 
-Spooly normally connects directly to printers on the same local network: Bambu uses local MQTT-over-TLS, and Klipper uses Moonraker's HTTP API. If the regular Bambu connection fails, experimental **Bambu (Fallback)** can use an available Bambu Studio session to receive status through Bambu's service. See the [setup guide](docs/BAMBU_SETUP.md#experimental-bambu-fallback).
+Spooly connects to supported printers on your local network. If you're having difficulty connecting to your Bambu printer, experimental **Bambu (Fallback)** may provide another way to connect. See the [setup guide](docs/BAMBU_SETUP.md#experimental-bambu-fallback).
 
 Printer configuration stays on the computer under the current operating-system user account. Spooly has no account system, cloud service, advertising, or analytics. Read the full [privacy and local-data note](PRIVACY.md).
 
