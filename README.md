@@ -78,3 +78,7 @@ The source code is available under the [GNU General Public License v3.0](LICENSE
 ## Independent utility
 
 Created by [Extrusion Therapy](https://extrusiontherapy.com) as an independent workshop utility. Spooly is not affiliated with or endorsed by Bambu Lab, Klipper, Moonraker, or Snapmaker.
+
+## Contribution and security policies
+
+See [CONTRIBUTING.md](CONTRIBUTING.md) for changes and validation, and [SECURITY.md](SECURITY.md) for reporting suspected vulnerabilities.
