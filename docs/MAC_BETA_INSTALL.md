@@ -8,10 +8,10 @@ Starting with Spooly 0.1.12, the macOS build is signed with an Apple Developer I
 
 You should not need to create an exception in Privacy & Security. If macOS reports that the developer cannot be verified, delete that copy and download the current DMG from the official [Spooly releases page](https://github.com/rdcstout/Spooly-by-Extrusion-Therapy/releases/latest).
 
-Spooly runs locally and connects only to printers configured on the local network.
+Choose **Bambu Local** for a local-network connection or experimental **Bambu Cloud** to attempt a cloud connection. Klipper / Moonraker connects locally. See the [printer setup guide](BAMBU_SETUP.md).
 ## Printers offline or scans find nothing
 
-Check printer power, its current IP address, and that both devices are on the same network. In Spooly Setup, open **Can’t find or connect to your printer?**
+For local connections, check printer power, its current IP address, and that both devices are on the same network. In Spooly Setup, open **Can’t find or connect to your printer?**
 
 Choose **Open Privacy Settings**, select **Local Network**, and allow Spooly. If it already says **On**, turn it off and back on; check each Spooly entry if there are duplicates. Then use **Check / Retry**, or scan again. This can recover stuck macOS permission state without changing your firewall or router.
 

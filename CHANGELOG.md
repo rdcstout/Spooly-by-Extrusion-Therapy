@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.1.22
+
+- Introduced the Bambu Local and experimental Bambu Cloud names in Setup. Bambu Cloud was previously called Bambu Fallback; both connection methods retain their existing behavior.
+- Refreshed connection guidance and documentation for current features.
+
 ## 0.1.21
 
 - Added experimental Bambu Fallback for Bambu printers that have difficulty connecting through the regular Spooly connection.

@@ -16,7 +16,7 @@ class BambuFallbackAdapter extends BambuAdapter {
     if (this.worker || this.retryTimer) return;
     this.isDisconnecting = false;
     const generation = ++this.generation;
-    if (!this.hasConnected) this.connectionStatus(onStatus, { phase: 'connecting', message: 'Trying Bambu Fallback…' });
+    if (!this.hasConnected) this.connectionStatus(onStatus, { phase: 'connecting', message: 'Trying Bambu Cloud…' });
     let received = false, failed = false;
     const fail = reason => {
       if (failed || this.isDisconnecting || generation !== this.generation) return;
@@ -25,11 +25,11 @@ class BambuFallbackAdapter extends BambuAdapter {
       this.worker?.kill();this.worker = null;
       onUpdate({ id: this.config.id, name: this.config.name, type: 'bambu', status: 'offline', message: '' });
       const messages = {
-        session: 'Bambu Fallback is unavailable. Try the regular Bambu connection or contact support with this error code.',
-        unavailable: 'Bambu Fallback is unavailable on this computer. Try the regular Bambu connection.',
-        serial: 'Bambu Fallback needs a valid printer serial number.',
+        session: 'Bambu Cloud is unavailable. Try Bambu Local or contact support with this error code.',
+        unavailable: 'Bambu Cloud is unavailable on this computer. Try Bambu Local.',
+        serial: 'Bambu Cloud needs a valid printer serial number.',
       };
-      if (!this.hasConnected) this.connectionStatus(onStatus, { phase: 'failed', code: 'BAMBU-FALLBACK-01', message: messages[reason] || 'Bambu Fallback could not receive printer status. Check your internet connection and that the printer is online.' });
+      if (!this.hasConnected) this.connectionStatus(onStatus, { phase: 'failed', code: 'BAMBU-FALLBACK-01', message: messages[reason] || 'Bambu Cloud could not receive printer status. Check your internet connection and that the printer is online.' });
       this.retryTimer = setTimeout(() => { this.retryTimer = null;this.connect(onUpdate, onConnected, onStatus); }, this.retryMs);
     };
     this.staleTimer = setTimeout(() => fail('timeout'), this.staleMs);

@@ -136,18 +136,21 @@ function addPrinter(data = {}, { prepend = false, focus = false } = {}) {
   card.querySelectorAll('[data-field]').forEach((input) => { if (data[input.dataset.field] !== undefined) input.value = data[input.dataset.field]; });
   const type = card.querySelector('[data-field="type"]');
   const fallback = document.createElement('option');
-  fallback.value = 'bambu-fallback';fallback.textContent = 'Bambu (Fallback)';fallback.disabled = !fallbackAvailable;
+  fallback.value = 'bambu-fallback';fallback.textContent = 'Bambu Cloud';fallback.disabled = !fallbackAvailable;
   type.append(fallback);
   if (data.type === 'bambu' && data.connection === 'fallback') type.value = 'bambu-fallback';
   const hint = document.createElement('p');
   hint.className = 'fallback-hint';
-  hint.textContent = 'If you can’t connect using the regular Bambu connection, try Bambu Fallback. Experimental.';
+  hint.textContent = 'Bambu Cloud attempts to connect through the cloud. Experimental.';
   card.querySelector('.grid').append(hint);
   const updateType = () => {
     const isFallback = type.value === 'bambu-fallback';
     card.classList.toggle('is-bambu', type.value === 'bambu' || isFallback);
     card.classList.toggle('is-fallback', isFallback);
-    hint.hidden = !isFallback;
+    hint.hidden = type.value !== 'bambu' && !isFallback;
+    hint.textContent = isFallback
+      ? 'Bambu Cloud attempts to connect through the cloud. Experimental.'
+      : 'Bambu Local connects over your local network. Your printer can stay in its normal cloud-connected mode.';
     card.querySelector('[data-field="host"]').closest('label').hidden = isFallback;
     card.querySelector('[data-field="accessCode"]').closest('label').hidden = isFallback;
     card.querySelector('.scan-bambu').textContent = isFallback ? 'Find printers' : 'Scan local network';
@@ -225,7 +228,7 @@ function addPrinter(data = {}, { prepend = false, focus = false } = {}) {
       });
       else {
         button.textContent = usingFallback ? 'Find printers' : 'Scan local network';
-        results.textContent = usingFallback ? 'No printers found through Bambu Fallback. Check that your printer is online, then try again.' : 'BAMBU-DISCOVERY-01 — No Bambu printers answered the scan. Try manual entry.';
+        results.textContent = usingFallback ? 'No printers found through Bambu Cloud. Check that your printer is online, then try again.' : 'BAMBU-DISCOVERY-01 — No Bambu printers answered the scan. Try manual entry.';
         if (!usingFallback) revealNetworkHelp();
       }
     } catch (error) {

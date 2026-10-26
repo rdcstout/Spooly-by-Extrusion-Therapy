@@ -5,6 +5,16 @@ const { BambuFallbackAdapter } = require('../src/adapters/bambu-fallback');
 const { samePrinterConfiguration, dedupePrinters } = require('../src/printers');
 const wait = ms => new Promise(resolve => setTimeout(resolve, ms));
 const config = { id: 'test', name: 'Test printer', type: 'bambu', serial: 'SERIAL123', host: '192.168.1.2' };
+test('Local and Cloud names preserve saved transport identifiers', () => {
+  const fs = require('node:fs');
+  const path = require('node:path');
+  const html = fs.readFileSync(path.join(__dirname, '../src/renderer/settings.html'), 'utf8');
+  const js = fs.readFileSync(path.join(__dirname, '../src/renderer/settings.js'), 'utf8');
+  assert.match(html, /value="bambu">Bambu Local/);
+  assert.match(js, /fallback.value = 'bambu-fallback';fallback.textContent = 'Bambu Cloud'/);
+  assert.match(js, /printer.connection = 'fallback'/);
+  assert.doesNotMatch(html + js, /Bambu \(Fallback\)|Bambu Fallback|Bambu LAN/);
+});
 test('fallback discovery keeps its Find printers label after successful discovery', () => {
   const source = require('node:fs').readFileSync(require('node:path').join(__dirname, '../src/renderer/settings.js'), 'utf8');
   assert.match(source, /if \(button\.textContent === 'Scanning…'\) button\.textContent = usingFallback \? 'Find printers' : 'Scan local network';/);

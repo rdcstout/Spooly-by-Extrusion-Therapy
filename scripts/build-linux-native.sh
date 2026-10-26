@@ -23,7 +23,7 @@ done
 printf '%s\n' 'Package: spooly' "Version: $version" 'Architecture: amd64' \
   'Maintainer: Extrusion Therapy' \
   'Depends: libgtk-3-0t64, libnss3, libgbm1, libasound2t64, libxss1, libxtst6, libsecret-1-0' \
-  'Description: Spooly by Extrusion Therapy - local-network printer companion' > "$debroot/DEBIAN/control"
+  'Description: Spooly by Extrusion Therapy - 3D printer companion' > "$debroot/DEBIAN/control"
 printf '%s\n' '#!/bin/sh' 'set -e' 'chown root:root /opt/spooly/chrome-sandbox' \
   'chmod 4755 /opt/spooly/chrome-sandbox' > "$debroot/DEBIAN/postinst"
 chmod 755 "$debroot/DEBIAN/postinst"

@@ -28,7 +28,7 @@ Free downloads. [Release notes](../../releases/latest) · [macOS installation](d
 
 ## See your printers without keeping every slicer open
 
-Spooly is a small, always-on-top desktop pet that watches supported printers on your local network. Click Spooly for a compact fleet view with each printer's state, progress, temperatures, and reported fans.
+Spooly is a small, always-on-top desktop pet that watches your 3D printers. Click Spooly for a resizable fleet view with each printer's state, progress, time remaining, temperatures, and reported fans.
 
 ### At a glance
 
@@ -38,14 +38,16 @@ Spooly is a small, always-on-top desktop pet that watches supported printers on 
 - Actual and target nozzle/bed temperatures while printing or paused; actual temperatures otherwise
 - Part, auxiliary, and chamber fan states when the printer reports them
 - Animated mascot reactions and automatic attention bubbles
-- Local-network discovery for Bambu Lab and Moonraker-compatible printers
-- Multiple-printer monitoring, duplicate detection, configuration backup/restore, adjustable mascot size, launch at login on macOS/Windows, and optional weekly update checks
+- Bambu Local and experimental Bambu Cloud connection options, plus Klipper / Moonraker support
+- Multiple-printer monitoring, duplicate detection, configuration backup/restore, adjustable mascot and popup size, and launch at login on macOS/Windows
+- Check for updates in Setup, with optional weekly update checks
 
 ## Compatibility
 
 | Connection | What to expect |
 | --- | --- |
-| **Bambu Lab** | Discovery, status, progress, temperatures, and reported fans. |
+| **Bambu Local** | Connects over your local network. Your printer can stay in its normal cloud-connected mode. |
+| **Bambu Cloud** | Attempts to connect through the cloud. Experimental. |
 | **Klipper / Moonraker** | Discovery and monitoring through Moonraker. |
 
 For Snapmaker U1 with Paxx12 firmware, see the [Moonraker setup guide](docs/KLIPPER_SETUP.md#snapmaker-u1-with-paxx12-firmware).
@@ -57,7 +59,7 @@ For help connecting your printer, open a [printer compatibility report](../../is
 
 ## How it works
 
-Add your printers in Setup, then click Spooly to see their status, progress, temperatures, and fans. Spooly reacts when a printer needs attention or finishes a print. If you're having difficulty connecting to your Bambu printer, experimental **Bambu (Fallback)** may provide another way to connect. See the [setup guide](docs/BAMBU_SETUP.md#experimental-bambu-fallback).
+Add your printers in Setup, then click Spooly to see their status. Drag the popup's resize corner to adjust its size. Spooly reacts when a printer needs attention or finishes a print. Choose **Bambu Local** for your local network or try experimental **Bambu Cloud** for a cloud connection. See the [setup guide](docs/BAMBU_SETUP.md).
 
 ## Support future tools
 

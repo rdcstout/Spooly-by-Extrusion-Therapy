@@ -1,6 +1,6 @@
 {
   "name": "spooly",
-  "version": "0.1.21",
+  "version": "0.1.22",
   "author": "Extrusion Therapy",
   "description": "A desktop pet that watches your 3D printers.",
   "main": "src/main.js",
