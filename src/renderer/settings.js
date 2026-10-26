@@ -153,6 +153,7 @@ function addPrinter(data = {}, { prepend = false, focus = false } = {}) {
       : 'Bambu Local connects over your local network. Your printer can stay in its normal cloud-connected mode.';
     card.querySelector('[data-field="host"]').closest('label').hidden = isFallback;
     card.querySelector('[data-field="accessCode"]').closest('label').hidden = isFallback;
+    card.querySelector('[data-field="serial"]').closest('label').hidden = isFallback;
     card.querySelector('.scan-bambu').textContent = isFallback ? 'Find printers' : 'Scan local network';
     card.querySelector('.guide-button').hidden = isFallback;
   };
@@ -326,7 +327,9 @@ document.querySelector('#save').addEventListener('click', async () => {
   const saved = document.querySelector('#saved');
   const incomplete = [...list.children].map(cardValue).find(printer => printer.name && (printer.connection === 'fallback' ? !printer.serial : !printer.host));
   if (incomplete) {
-    saved.textContent = `Enter ${incomplete.connection === 'fallback' ? 'a serial number' : 'an IP address'} for ${incomplete.name} before saving.`;
+    saved.textContent = incomplete.connection === 'fallback'
+      ? `Click Find printers and select ${incomplete.name} before saving.`
+      : `Enter an IP address for ${incomplete.name} before saving.`;
     return;
   }
   const printers = readPrinters();

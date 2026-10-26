@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.1.23
+
+- Prevented a lingering completed job on Snapmaker U1 and other Moonraker printers from replaying the celebration after restarting or reconnecting.
+- Simplified Bambu Cloud setup: choose Find printers instead of entering a serial number.
+
 ## 0.1.22
 
 - Introduced the Bambu Local and experimental Bambu Cloud names in Setup. Bambu Cloud was previously called Bambu Fallback; both connection methods retain their existing behavior.

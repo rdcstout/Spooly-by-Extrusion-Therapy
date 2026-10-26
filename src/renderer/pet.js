@@ -207,10 +207,15 @@ function label(status) {
   return ({ filament_out: 'FILAMENT OUT', printing: 'PRINTING', paused: 'PAUSED', complete: 'COMPLETE', error: 'ERROR', idle: 'IDLE', offline: 'OFFLINE' })[status] || status;
 }
 
+const seenCompletions = new Map();
 function render(snapshot) {
   current = snapshot;
   const firstRun = !snapshot.onboarded && !snapshot.printers.length;
-  const justCompleted = snapshot.status === 'complete' && lastReportedStatus !== 'complete';
+  const completionKey = snapshot.source?.completionEventKey;
+  const justCompleted = snapshot.status === 'complete' && (completionKey === undefined
+    ? lastReportedStatus !== 'complete'
+    : Boolean(completionKey && seenCompletions.get(snapshot.source.id) !== completionKey));
+  if (justCompleted && completionKey) seenCompletions.set(snapshot.source.id, completionKey);
   const visualStatus = firstRun || snapshot.status === 'complete' ? 'idle' : snapshot.status;
   if (completionActive && snapshot.status !== 'complete') stopCompleteCelebration();
   if (hoverReactionActive && !['idle', 'complete'].includes(snapshot.status)) stopHoverReaction();

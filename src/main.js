@@ -4,6 +4,7 @@ const fs = require('node:fs/promises');
 const { app, BrowserWindow, ipcMain, Menu, Tray, nativeImage, screen, shell, dialog, powerMonitor, net, Notification } = require('electron');
 const Store = require('electron-store');
 const { aggregatePrinters } = require('./state');
+const { observeCompletion } = require('./completion-tracker');
 const { MoonrakerAdapter } = require('./adapters/moonraker');
 const { BambuAdapter } = require('./adapters/bambu');
 const { BambuFallbackAdapter } = require('./adapters/bambu-fallback');
@@ -68,6 +69,8 @@ let printerStates = [];
 let printerConnectionStatuses = new Map();
 let pendingSetupPrinterIds = new Set();
 let acknowledgedKey = null;
+let completionSequence = 0;
+const completionEvents = new Map();
 let simulatedPrinters = null;
 let petDrag = null;
 let petSizeLockTimer = null;
@@ -544,6 +547,17 @@ async function configureAdapters(setupPrinterIds = new Set(), { preserveUnchange
     ? previousStates.get(config.id)
     : { id: config.id, name: config.name, type: config.type, status: 'offline', message: '' });
   const setState = (state) => {
+    if (state.type === 'moonraker') {
+      const records = store.get('completionHistory', {});
+      const history = records && typeof records === 'object' && !Array.isArray(records) ? records : {};
+      const result = observeCompletion(history[state.id], state);
+      if (history[state.id] !== result.armed) {
+        store.set('completionHistory', { ...history, [state.id]: result.armed });
+      }
+      if (result.celebrate) completionEvents.set(state.id, `${state.id}:${++completionSequence}`);
+      if (['printing', 'paused', 'idle'].includes(state.status)) completionEvents.delete(state.id);
+      state = { ...state, completionEventKey: completionEvents.get(state.id) || '' };
+    }
     const index = printerStates.findIndex((p) => p.id === state.id);
     const previous = index >= 0 ? printerStates[index] : null;
     if (index >= 0) printerStates[index] = state; else printerStates.push(state);
