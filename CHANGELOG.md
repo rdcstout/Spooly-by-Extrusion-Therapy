@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.1.24
+
+- Updated Electron with security fixes and improvements to network recovery and platform stability.
+- Updated URI parsing dependencies with security fixes.
+
 ## 0.1.23
 
 - Prevented a lingering completed job on Snapmaker U1 and other Moonraker printers from replaying the celebration after restarting or reconnecting.
