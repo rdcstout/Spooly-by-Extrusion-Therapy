@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.1.25
+
+- Fixed a lingering completed job on Snapmaker U1 and other Moonraker printers holding Spooly in idle while another printer is printing. After acknowledging the celebration, Spooly reflects the remaining printers' activity.
+
 ## 0.1.24
 
 - Updated Electron with security fixes and improvements to network recovery and platform stability.

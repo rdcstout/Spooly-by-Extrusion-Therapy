@@ -3,7 +3,7 @@ const fsSync = require('node:fs');
 const fs = require('node:fs/promises');
 const { app, BrowserWindow, ipcMain, Menu, Tray, nativeImage, screen, shell, dialog, powerMonitor, net, Notification } = require('electron');
 const Store = require('electron-store');
-const { aggregatePrinters } = require('./state');
+const { aggregatePrinters, completionFallbackStatus } = require('./state');
 const { observeCompletion } = require('./completion-tracker');
 const { MoonrakerAdapter } = require('./adapters/moonraker');
 const { BambuAdapter } = require('./adapters/bambu');
@@ -229,6 +229,7 @@ function snapshot() {
     : null;
   return {
     ...aggregate,
+    completionFallbackStatus: completionFallbackStatus(printers),
     networkHelp: showNetworkHelp(process.platform, printers),
     bouncing: Boolean(alertKey && alertKey !== acknowledgedKey),
     onboarded: store.get('onboarded'),

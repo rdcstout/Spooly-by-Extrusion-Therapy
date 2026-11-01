@@ -27,4 +27,12 @@ function aggregatePrinters(printers = []) {
   return { status: source.status, source, printers: normalized };
 }
 
-module.exports = { PRIORITY, aggregatePrinters, normalizeStatus };
+// A finished printer remains COMPLETE in telemetry, but after its celebration
+// is acknowledged it must not hide another printer's ongoing activity.
+function completionFallbackStatus(printers = []) {
+  return aggregatePrinters(printers.map((printer) => printer.status === 'complete'
+    ? { ...printer, status: 'idle' }
+    : printer)).status;
+}
+
+module.exports = { PRIORITY, aggregatePrinters, normalizeStatus, completionFallbackStatus };

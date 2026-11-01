@@ -130,9 +130,9 @@ function stopCompleteCelebration() {
   animationTimer = null;
   completionActive = false;
   animationKey = '';
-  currentVisualStatus = 'idle';
-  stage.className = 'idle';
-  updateSpriteAnimation('idle', false);
+  currentVisualStatus = current?.completionFallbackStatus || 'idle';
+  stage.className = currentVisualStatus;
+  updateSpriteAnimation(currentVisualStatus, current?.bouncing);
 }
 
 function playHoverReaction(onFinished) {
@@ -216,7 +216,9 @@ function render(snapshot) {
     ? lastReportedStatus !== 'complete'
     : Boolean(completionKey && seenCompletions.get(snapshot.source.id) !== completionKey));
   if (justCompleted && completionKey) seenCompletions.set(snapshot.source.id, completionKey);
-  const visualStatus = firstRun || snapshot.status === 'complete' ? 'idle' : snapshot.status;
+  const visualStatus = firstRun ? 'idle' : snapshot.status === 'complete'
+    ? snapshot.completionFallbackStatus || 'idle'
+    : snapshot.status;
   if (completionActive && snapshot.status !== 'complete') stopCompleteCelebration();
   if (hoverReactionActive && !['idle', 'complete'].includes(snapshot.status)) stopHoverReaction();
   lastReportedStatus = snapshot.status;
