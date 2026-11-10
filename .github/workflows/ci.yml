@@ -26,3 +26,13 @@ jobs:
           cache: pnpm
       - run: pnpm install --frozen-lockfile
       - run: pnpm test
+      # This is the monitoring helper, not a printer-control integration.
+      - name: Build native monitoring helper (macOS and Linux)
+        if: runner.os != 'Windows'
+        run: pnpm run build:fallback
+      - name: Build native monitoring helper (Windows)
+        if: runner.os == 'Windows'
+        shell: cmd
+        run: call scripts\build-fallback-windows.cmd
+      - name: Smoke-test native monitoring helper without a printer
+        run: node scripts/check-fallback-build.cjs
