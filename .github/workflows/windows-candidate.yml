@@ -1,0 +1,27 @@
+name: Windows candidate
+on:
+  push:
+    branches: [codex/spooly-0126-windows]
+permissions:
+  contents: read
+jobs:
+  package:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 11.19.0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm test
+      - run: scripts\build-fallback-windows.cmd
+        shell: cmd
+      - run: pnpm exec electron-builder --win nsis --x64 --publish never
+      - uses: actions/upload-artifact@v4
+        with:
+          name: spooly-0.1.26-windows
+          path: dist/*.exe
+          if-no-files-found: error
