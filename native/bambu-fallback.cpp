@@ -74,6 +74,8 @@ int main() {
  symbol<int(*)(void*,std::function<void(int,int)>)>(h,"bambu_network_set_on_server_connected_fn")(a,[&](int r,int){connected=r==0;emit("connection",r==0?"connected":"offline");});
  symbol<int(*)(void*,std::function<void(std::string,std::string)>)>(h,"bambu_network_set_on_message_fn")(a,[serial](std::string id,std::string body){if(id==serial)emit("report",body);});
  symbol<void(*)(void*,bool)>(h,"bambu_network_enable_multi_machine")(a,true);
+ // Initialize the SDK before starting its account and telemetry services.
+ if(symbol<int(*)(void*)>(h,"bambu_network_init_log")(a)!=0){emit("error","unavailable");return 4;}
  symbol<int(*)(void*)>(h,"bambu_network_start")(a);
  if(!symbol<bool(*)(void*)>(h,"bambu_network_is_user_login")(a)){emit("error","session");return 4;}
  if(serial=="--check"){emit("available","true");_exit(0);}

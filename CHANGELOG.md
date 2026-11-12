@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.1.26
+
+- Fixed Bambu Cloud printer discovery and restored live status updates when the networking library requires initialization before connecting.
+
 ## 0.1.25
 
 - Fixed a lingering completed job on Snapmaker U1 and other Moonraker printers holding Spooly in idle while another printer is printing. After acknowledging the celebration, Spooly reflects the remaining printers' activity.
